@@ -63,8 +63,6 @@ exports.studentforgetlink = catchAsyncHandler(async (req, res, next) => {
         return next(new ErrorHandler("Student not found with this email address", 404));
     }
 
-    console.log(student);
-
     if(student.resetPasswordToken == "1"){
         student.resetPasswordToken = "0";
         student.password = req.body.password;
@@ -77,4 +75,12 @@ exports.studentforgetlink = catchAsyncHandler(async (req, res, next) => {
     res.status(200).json({
         message: "Password has been successfully changed"
     })
+})
+
+exports.studentresetpassword = catchAsyncHandler(async (req, res, next) => {
+    const student = await Student.findById(req.id).exec();
+
+    student.password = req.body.password;
+    await student.save();
+    sendtoken(student, 200, res);
 })
