@@ -1,3 +1,5 @@
-exports.homepage = (req, res, next) => {
-    res.json({message: "homepage"});
-}
+const { catchAsyncHandler } = require("../middlewares/catchAsyncHandler");
+
+exports.homepage = catchAsyncHandler((req, res, next) => {
+    res.status(200).json({message: "homepage"})
+})
