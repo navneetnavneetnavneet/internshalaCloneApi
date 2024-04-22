@@ -7,6 +7,8 @@ const indexRouter = require("./routes/indexRouters");
 const logger = require("morgan");
 const ErrorHandler = require("./utils/ErrorHandler");
 const { generateErrors } = require("./middlewares/errors");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 
 // db connction
 require("./models/db").connectDatabase();
@@ -17,6 +19,14 @@ app.use(logger("tiny"));
 // body parser
 app.use(express.json());
 app.use(express.urlencoded());
+
+//session and cookie
+app.use(session({
+    resave: true,
+    saveUninitialized: true,
+    secret: process.env.EXPRESS_SESSION_SECRET
+}));
+app.use(cookieParser());
 
 // routes
 app.use("/", indexRouter);
