@@ -8,8 +8,15 @@ const logger = require("morgan");
 const ErrorHandler = require("./utils/ErrorHandler");
 const { generateErrors } = require("./middlewares/errors");
 
+// db connction
+require("./models/db").connectDatabase();
+
 // logger
 app.use(logger("tiny"));
+
+// body parser
+app.use(express.json());
+app.use(express.urlencoded());
 
 // routes
 app.use("/", indexRouter);
