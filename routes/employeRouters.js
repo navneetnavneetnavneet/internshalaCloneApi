@@ -10,6 +10,13 @@ const {
     employeresetpassword,
     employeupdate,
     employeavatar,
+    internshipcreate,
+    readinternship,
+    readsingleinternship,
+    jobcreate,
+    readjob,
+    readsinglejob,
+
  } = require("../controllers/employeControllers");
 const { isAuthenticated } = require("../middlewares/auth");
 const router = express.Router();
@@ -43,5 +50,24 @@ router.post("/update/:id", isAuthenticated, employeupdate);
 
 // POST /employe/avatar/:studentid
 router.post("/avatar/:id", isAuthenticated, employeavatar);
+
+
+// POST /employe/internship/create
+router.post("/internship/create", isAuthenticated, internshipcreate);
+
+// POST /employe/internship/read
+router.post("/internship/read", isAuthenticated, readinternship);
+
+// POST /employe/internship/read/:id
+router.post("/internship/read/:id", isAuthenticated, readsingleinternship);
+
+// POST /employe/job/create
+router.post("/job/create", isAuthenticated, jobcreate);
+
+// POST /employe/job/read
+router.post("/job/read", isAuthenticated, readjob);
+
+// POST /employe/job/read/:id
+router.post("/job/read/:id", isAuthenticated, readsinglejob);
 
 module.exports = router;

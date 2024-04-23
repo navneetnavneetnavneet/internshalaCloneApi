@@ -1,5 +1,7 @@
 const { catchAsyncHandler } = require("../middlewares/catchAsyncHandler");
 const Student = require("../models/studentModel");
+const Internship = require("../models/internshipModel");
+const Job = require("../models/jobModel");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { sendtoken } = require("../utils/SendToken");
 const { sendmail } = require("../utils/nodemailer");
@@ -118,5 +120,43 @@ exports.studentavatar = catchAsyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         message: "avatar upload successfully"
+    })
+})
+
+// ----------------apply internship--------------
+
+exports.applyinternship = catchAsyncHandler(async (req, res, next) => {
+    const student = await Student.findById(req.id).exec();
+    const internship = await Internship.findById(req.params.internshipid);
+
+    student.internships.push(internship._id);
+    internship.students.push(student._id);
+
+    await student.save();
+    await internship.save();
+
+    res.status(200).json({
+        success: true,
+        student,
+        internship
+    })
+})
+
+// ----------------apply job--------------
+
+exports.applyjob = catchAsyncHandler(async (req, res, next) => {
+    const student = await Student.findById(req.id).exec();
+    const job = await Job.findById(req.params.jobid);
+
+    student.jobs.push(job._id);
+    job.students.push(student._id);
+
+    await student.save();
+    await job.save();
+
+    res.status(200).json({
+        success: true,
+        student,
+        job,
     })
 })

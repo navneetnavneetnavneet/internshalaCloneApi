@@ -1,5 +1,7 @@
 const { catchAsyncHandler } = require("../middlewares/catchAsyncHandler");
 const Employe = require("../models/employeModel");
+const Internship = require("../models/internshipModel");
+const Job = require("../models/jobModel");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { sendtoken } = require("../utils/SendToken");
 const { sendmail } = require("../utils/nodemailer");
@@ -118,5 +120,69 @@ exports.employeavatar = catchAsyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         message: "organizationlogo upload successfully"
+    })
+})
+
+// ---------------------create internship------------------------
+exports.internshipcreate = catchAsyncHandler(async (req, res, next) => {
+    const employe = await Employe.findById(req.id).exec();
+    const internship = await new Internship(req.body);
+    internship.employe = employe._id;
+    employe.internships.push(internship._id);
+
+    await internship.save();
+    await employe.save();
+
+    res.status(201).json({
+        success: true,
+        internship
+    })
+})
+
+exports.readinternship = catchAsyncHandler(async (req, res, next) => {
+    const { internships } = await Employe.findById(req.id).populate("internships");
+    res.status(200).json({
+        success: true,
+        internships
+    })
+})
+
+exports.readsingleinternship = catchAsyncHandler(async (req, res, next) => {
+    const internship = await Internship.findById(req.params.id).exec();
+    res.status(200).json({
+        success: true,
+        internship
+    })
+})
+
+// ---------------------create job------------------------
+exports.jobcreate = catchAsyncHandler(async (req, res, next) => {
+    const employe = await Employe.findById(req.id).exec();
+    const job = await new Job(req.body);
+    job.employe = employe._id;
+    employe.jobs.push(job._id);
+
+    await job.save();
+    await employe.save();
+
+    res.status(201).json({
+        success: true,
+        job
+    })
+})
+
+exports.readjob = catchAsyncHandler(async (req, res, next) => {
+    const { jobs } = await Employe.findById(req.id).populate("jobs");
+    res.status(200).json({
+        success: true,
+        jobs
+    })
+})
+
+exports.readsinglejob = catchAsyncHandler(async (req, res, next) => {
+    const job = await Job.findById(req.params.id).exec();
+    res.status(200).json({
+        success: true,
+        job
     })
 })
