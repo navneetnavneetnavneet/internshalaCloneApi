@@ -4,6 +4,8 @@ require("dotenv").config({
 const express = require("express");
 const app = express();
 const indexRouter = require("./routes/indexRouters");
+const resumeRouter = require("./routes/resumeRouters");
+const employeRouter = require("./routes/employeRouters");
 const logger = require("morgan");
 const ErrorHandler = require("./utils/ErrorHandler");
 const { generateErrors } = require("./middlewares/errors");
@@ -33,7 +35,9 @@ app.use(session({
 app.use(cookieParser());
 
 // routes
-app.use("/", indexRouter);
+app.use("/user", indexRouter);
+app.use("/resume", resumeRouter);
+app.use("/employe", employeRouter);
 
 // error handling
 app.all("*", (req, res, next) => {
