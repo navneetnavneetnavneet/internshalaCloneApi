@@ -8,6 +8,8 @@ const {
     studentsendmail,
     studentforgetlink,
     studentresetpassword,
+    studentupdate,
+    studentavatar,
  } = require("../controllers/indexControllers");
 const { isAuthenticated } = require("../middlewares/auth");
 const router = express.Router();
@@ -33,7 +35,13 @@ router.post("/student/sendmail", studentsendmail);
 // GET /student/forget-link/:studentid
 router.get("/student/forget-link/:id", studentforgetlink);
 
-// POST /student/reset-password
+// POST /student/reset-password/:studentid
 router.post("/student/reset-password/:id", isAuthenticated, studentresetpassword);
+
+// POST /student/update/:studentid
+router.post("/student/update/:id", isAuthenticated, studentupdate);
+
+// POST /student/avatar/:studentid
+router.post("/student/avatar/:id", isAuthenticated, studentavatar);
 
 module.exports = router;

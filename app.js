@@ -9,6 +9,7 @@ const ErrorHandler = require("./utils/ErrorHandler");
 const { generateErrors } = require("./middlewares/errors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const fileupload = require("express-fileupload");
 
 // db connction
 require("./models/db").connectDatabase();
@@ -19,6 +20,9 @@ app.use(logger("tiny"));
 // body parser
 app.use(express.json());
 app.use(express.urlencoded());
+
+// express file-upload
+app.use(fileupload());
 
 //session and cookie
 app.use(session({

@@ -3,6 +3,8 @@ const Student = require("../models/studentModel");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { sendtoken } = require("../utils/SendToken");
 const { sendmail } = require("../utils/nodemailer");
+const path = require("path");
+const imagekit = require("../utils/imagekit").initImageKit();
 
 exports.homepage = catchAsyncHandler(async (req, res, next) => {
     res.status(200).json({message: "Secure homepage"})
@@ -83,4 +85,38 @@ exports.studentresetpassword = catchAsyncHandler(async (req, res, next) => {
     student.password = req.body.password;
     await student.save();
     sendtoken(student, 200, res);
+})
+
+exports.studentupdate = catchAsyncHandler(async (req, res, next) => {
+    const student = await Student.findByIdAndUpdate(req.id, req.body, {new: true}).exec();
+    res.status(200).json({
+        success: true,
+        message: "Student Updated Successfully",
+        student
+    })
+})
+
+exports.studentavatar = catchAsyncHandler(async (req, res, next) => {
+    const student = await Student.findById(req.params.id).exec();
+    const file = req.files.avatar;
+    const modifiedFileName = `resumebuilder-${Date.now()}${path.extname(file.name)}`;
+
+    // delete file on imagekit
+    if(student.avatar.fileId !== ""){
+        await imagekit.deleteFile(student.avatar.fileId);
+    }
+
+    // upload file on imagekit
+    const { fileId, url } = await imagekit.upload({
+        file: file.data,
+        fileName: modifiedFileName
+    })
+
+    student.avatar = { fileId, url };
+    await student.save();
+
+    res.status(200).json({
+        success: true,
+        message: "avatar upload successfully"
+    })
 })
