@@ -17,7 +17,7 @@ const { isAuthenticated } = require("../middlewares/auth");
 const router = express.Router();
 
 // GET /
-router.get("/", isAuthenticated, homepage);
+router.get("/",  homepage);
 
 // POST /student
 router.post("/student", isAuthenticated, currentstudent);
