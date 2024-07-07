@@ -1,23 +1,24 @@
 const express = require("express");
-const { 
-    homepage,
-    studentsignup,
-    studentsignin,
-    studentsignout,
-    currentstudent,
-    studentsendmail,
-    studentforgetlink,
-    studentresetpassword,
-    studentupdate,
-    studentavatar,
-    applyinternship,
-    applyjob,
- } = require("../controllers/indexControllers");
+const {
+  homepage,
+  studentsignup,
+  studentsignin,
+  studentsignout,
+  currentstudent,
+  studentsendmail,
+  studentforgetlink,
+  studentresetpassword,
+  studentchangeemail,
+  studentupdate,
+  studentavatar,
+  applyinternship,
+  applyjob,
+} = require("../controllers/indexControllers");
 const { isAuthenticated } = require("../middlewares/auth");
 const router = express.Router();
 
 // GET /
-router.get("/",  homepage);
+router.get("/", homepage);
 
 // POST /student
 router.post("/student", isAuthenticated, currentstudent);
@@ -35,10 +36,13 @@ router.get("/student/signout", isAuthenticated, studentsignout);
 router.post("/student/sendmail", studentsendmail);
 
 // GET /student/forget-link/:studentid
-router.get("/student/forget-link/:id", studentforgetlink);
+router.post("/student/forget-link/:id", studentforgetlink);
 
-// POST /student/reset-password/:studentid
-router.post("/student/reset-password/:id", isAuthenticated, studentresetpassword);
+// POST /student/reset-password
+router.post("/student/reset-password", isAuthenticated, studentresetpassword);
+
+// POST /student/chnage-email
+router.post("/student/change-email", isAuthenticated, studentchangeemail);
 
 // POST /student/update/:studentid
 router.post("/student/update/:id", isAuthenticated, studentupdate);
@@ -48,7 +52,11 @@ router.post("/student/avatar/:id", isAuthenticated, studentavatar);
 
 // ----------------apply internship--------------
 // POST /student/apply/internship/:internshipid
-router.post("/student/apply/internship/:internshipid", isAuthenticated, applyinternship);
+router.post(
+  "/student/apply/internship/:internshipid",
+  isAuthenticated,
+  applyinternship
+);
 
 // ----------------apply job--------------
 // POST /student/apply/job/:jobid

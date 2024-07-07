@@ -9,154 +9,180 @@ const path = require("path");
 const imagekit = require("../utils/imagekit").initImageKit();
 
 exports.homepage = catchAsyncHandler(async (req, res, next) => {
-    res.status(200).json({message: "Secure homepage"})
-})
+  res.status(200).json({ message: "Secure homepage" });
+});
 
 exports.currentstudent = catchAsyncHandler(async (req, res, next) => {
-    const student = await Student.findById(req.id).exec();
-    res.status(200).json({student})
-})
+  const student = await Student.findById(req.id).exec();
+  res.status(200).json(student);
+});
 
 exports.studentsignup = catchAsyncHandler(async (req, res, next) => {
-    const student = await new Student(req.body).save();
-    sendtoken(student, 201, res);
-})
+  const student = await new Student(req.body).save();
+  sendtoken(student, 201, res);
+});
 
 exports.studentsignin = catchAsyncHandler(async (req, res, next) => {
-    const student = await Student.findOne({email: req.body.email}).select("+password").exec();
-    
-    if(!student){
-        return next(new ErrorHandler("Student not found with this email address", 404));
-    }
+  const student = await Student.findOne({ email: req.body.email })
+    .select("+password")
+    .exec();
 
-    const isMatch = student.correctpassword(req.body.password);
+  if (!student) {
+    return next(
+      new ErrorHandler("Student not found with this email address", 404)
+    );
+  }
 
-    if(!isMatch){
-        return next(new ErrorHandler("Wrong Credientials", 500));
-    }
+  const isMatch = student.correctpassword(req.body.password);
 
-    sendtoken(student, 200, res);
-})
+  if (!isMatch) {
+    return next(new ErrorHandler("Wrong Credientials", 500));
+  }
+
+  sendtoken(student, 200, res);
+});
 
 exports.studentsignout = catchAsyncHandler(async (req, res, next) => {
-    res.clearCookie("token");
-    res.json({message: "Successfullu signout"});
-})
+  res.clearCookie("token");
+  res.json({ message: "Successfullu signout" });
+});
 
-exports.studentsendmail =catchAsyncHandler (async (req, res, next) => {
-    const student = await Student.findOne({email: req.body.email}).exec();
+exports.studentsendmail = catchAsyncHandler(async (req, res, next) => {
+  const student = await Student.findOne({ email: req.body.email }).exec();
 
-    if(!student){
-        return next(new ErrorHandler("Student not found with this email address", 404));
-    }
+  if (!student) {
+    return next(
+      new ErrorHandler("Student not found with this email address", 404)
+    );
+  }
 
-    const url = `${req.protocol}://${req.get("host")}/student/forget-link/${student._id}`;
+  const url = `${req.protocol}://${req.get("host")}/student/forget-link/${
+    student._id
+  }`;
 
-    sendmail(req, res, next, url);
-    student.resetPasswordToken = "1";
-    console.log(student);
-    await student.save();
+  sendmail(req, res, next, url);
+  student.resetPasswordToken = "1";
+  console.log(student);
+  await student.save();
 
-    res.json({student, url});
-})
+  res.json({ student, url });
+});
 
 exports.studentforgetlink = catchAsyncHandler(async (req, res, next) => {
-    const student = await Student.findById(req.params.id).exec();
+  const student = await Student.findById(req.params.id).exec();
 
-    if(!student){
-        return next(new ErrorHandler("Student not found with this email address", 404));
-    }
+  if (!student) {
+    return next(
+      new ErrorHandler("Student not found with this email address", 404)
+    );
+  }
 
-    if(student.resetPasswordToken == "1"){
-        student.resetPasswordToken = "0";
-        student.password = req.body.password;
-        await student.save();
-    }
-    else{
-        return next(new ErrorHandler("Invalid Reset Password Link! please try again", 500));
-    }
-
-    res.status(200).json({
-        message: "Password has been successfully changed"
-    })
-})
-
-exports.studentresetpassword = catchAsyncHandler(async (req, res, next) => {
-    const student = await Student.findById(req.id).exec();
-
+  if (student.resetPasswordToken == "1") {
+    student.resetPasswordToken = "0";
     student.password = req.body.password;
     await student.save();
-    sendtoken(student, 200, res);
-})
+  } else {
+    return next(
+      new ErrorHandler("Invalid Reset Password Link! please try again", 500)
+    );
+  }
+
+  res.status(200).json({
+    message: "Password has been successfully changed",
+  });
+});
+
+exports.studentresetpassword = catchAsyncHandler(async (req, res, next) => {
+  const student = await Student.findById(req.id).exec();
+
+  student.password = req.body.password;
+  await student.save();
+  sendtoken(student, 200, res);
+});
+
+exports.studentchangeemail = catchAsyncHandler(async (req, res, next) => {
+  const student = await Student.findById(req.id).exec();
+
+  student.email = req.body.email;
+  await student.save();
+  res.status(200).json({
+    success: true,
+    message: "Email has been successfully changed",
+  });
+});
 
 exports.studentupdate = catchAsyncHandler(async (req, res, next) => {
-    const student = await Student.findByIdAndUpdate(req.id, req.body, {new: true}).exec();
-    res.status(200).json({
-        success: true,
-        message: "Student Updated Successfully",
-        student
-    })
-})
+  const student = await Student.findByIdAndUpdate(req.id, req.body, {
+    new: true,
+  }).exec();
+  res.status(200).json({
+    success: true,
+    message: "Student Updated Successfully",
+    student,
+  });
+});
 
 exports.studentavatar = catchAsyncHandler(async (req, res, next) => {
-    const student = await Student.findById(req.params.id).exec();
-    const file = req.files.avatar;
-    const modifiedFileName = `resumebuilder-${Date.now()}${path.extname(file.name)}`;
+  const student = await Student.findById(req.params.id).exec();
+  const file = req.files.avatar;
+  const modifiedFileName = `resumebuilder-${Date.now()}${path.extname(
+    file.name
+  )}`;
 
-    // delete file on imagekit
-    if(student.avatar.fileId !== ""){
-        await imagekit.deleteFile(student.avatar.fileId);
-    }
+  // delete file on imagekit
+  if (student.avatar.fileId !== "") {
+    await imagekit.deleteFile(student.avatar.fileId);
+  }
 
-    // upload file on imagekit
-    const { fileId, url } = await imagekit.upload({
-        file: file.data,
-        fileName: modifiedFileName
-    })
+  // upload file on imagekit
+  const { fileId, url } = await imagekit.upload({
+    file: file.data,
+    fileName: modifiedFileName,
+  });
 
-    student.avatar = { fileId, url };
-    await student.save();
+  student.avatar = { fileId, url };
+  await student.save();
 
-    res.status(200).json({
-        success: true,
-        message: "avatar upload successfully"
-    })
-})
+  res.status(200).json({
+    success: true,
+    message: "avatar upload successfully",
+  });
+});
 
 // ----------------apply internship--------------
 
 exports.applyinternship = catchAsyncHandler(async (req, res, next) => {
-    const student = await Student.findById(req.id).exec();
-    const internship = await Internship.findById(req.params.internshipid);
+  const student = await Student.findById(req.id).exec();
+  const internship = await Internship.findById(req.params.internshipid);
 
-    student.internships.push(internship._id);
-    internship.students.push(student._id);
+  student.internships.push(internship._id);
+  internship.students.push(student._id);
 
-    await student.save();
-    await internship.save();
+  await student.save();
+  await internship.save();
 
-    res.status(200).json({
-        success: true,
-        student,
-        internship
-    })
-})
+  res.status(200).json({
+    success: true,
+    student,
+    internship,
+  });
+});
 
 // ----------------apply job--------------
 
 exports.applyjob = catchAsyncHandler(async (req, res, next) => {
-    const student = await Student.findById(req.id).exec();
-    const job = await Job.findById(req.params.jobid);
+  const student = await Student.findById(req.id).exec();
+  const job = await Job.findById(req.params.jobid);
 
-    student.jobs.push(job._id);
-    job.students.push(student._id);
+  student.jobs.push(job._id);
+  job.students.push(student._id);
 
-    await student.save();
-    await job.save();
+  await student.save();
+  await job.save();
 
-    res.status(200).json({
-        success: true,
-        student,
-        job,
-    })
-})
+  res.status(200).json({
+    success: true,
+    student,
+    job,
+  });
+});
