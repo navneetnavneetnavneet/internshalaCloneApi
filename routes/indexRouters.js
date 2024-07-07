@@ -11,6 +11,7 @@ const {
   studentchangeemail,
   studentupdate,
   studentavatar,
+  studentdelete,
   applyinternship,
   applyjob,
 } = require("../controllers/indexControllers");
@@ -49,6 +50,9 @@ router.post("/student/update/:id", isAuthenticated, studentupdate);
 
 // POST /student/avatar/:studentid
 router.post("/student/avatar/:id", isAuthenticated, studentavatar);
+
+// GET /student/delete
+router.get("/student/delete", isAuthenticated, studentdelete);
 
 // ----------------apply internship--------------
 // POST /student/apply/internship/:internshipid
