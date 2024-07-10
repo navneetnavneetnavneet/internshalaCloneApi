@@ -149,6 +149,15 @@ exports.studentavatar = catchAsyncHandler(async (req, res, next) => {
   });
 });
 
+exports.studentdelete = catchAsyncHandler(async (req, res, next) => {
+  await Student.findByIdAndDelete(req.id);
+  res.clearCookie("token");
+  res.status(200).json({
+    success: true,
+    message: "Student successfully deleted",
+  });
+});
+
 // ----------------apply internship--------------
 
 exports.applyinternship = catchAsyncHandler(async (req, res, next) => {
