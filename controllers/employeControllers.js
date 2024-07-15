@@ -14,7 +14,7 @@ exports.homepage = catchAsyncHandler(async (req, res, next) => {
 
 exports.currentemploye = catchAsyncHandler(async (req, res, next) => {
     const employe = await Employe.findById(req.id).exec();
-    res.status(200).json({employe});
+    res.status(200).json(employe);
 })
 
 exports.employesignup = catchAsyncHandler(async (req, res, next) => {
@@ -122,6 +122,15 @@ exports.employeavatar = catchAsyncHandler(async (req, res, next) => {
         message: "organizationlogo upload successfully"
     })
 })
+
+exports.employedelete = catchAsyncHandler(async (req, res, next) => {
+    await Employe.findByIdAndDelete(req.id);
+    res.clearCookie("token");
+    res.status(200).json({
+      success: true,
+      message: "Employe successfully deleted",
+    });
+  });
 
 // ---------------------create internship------------------------
 exports.internshipcreate = catchAsyncHandler(async (req, res, next) => {
