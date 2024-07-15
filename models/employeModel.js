@@ -4,12 +4,12 @@ const jwt = require("jsonwebtoken");
 
 const employeSchema = new mongoose.Schema(
     {
-        firstname: {
+        firstName: {
             type: String,
             required: [true, "First Name is required"],
             minLength: [4, "First Name should be atleast 4 character long"]
         },
-        lastname: {
+        lastName: {
             type: String,
             required: [true, "Last Name is required"],
             minLength: [4, "Last Name should be atleast 4 character long"]
@@ -40,7 +40,7 @@ const employeSchema = new mongoose.Schema(
         },
         organizationname: {
             type: String,
-            required: [true, "Organization Name is required"],
+            // required: [true, "Organization Name is required"],
             minLength: [4, "Organization Name should be atleast 4 character long"]
         },
         organizationlogo: {
