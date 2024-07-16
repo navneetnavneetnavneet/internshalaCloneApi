@@ -42,11 +42,11 @@ router.post("/sendmail", employesendmail);
 // GET /employe/forget-link/:studentid
 router.get("/forget-link/:id", employeforgetlink);
 
-// POST /employe/reset-password/:studentid
-router.post("/reset-password/:id", isAuthenticated, employeresetpassword);
+// POST /employe/reset-password
+router.post("/reset-password", isAuthenticated, employeresetpassword);
 
-// POST /employe/update/:studentid
-router.post("/update/:id", isAuthenticated, employeupdate);
+// POST /employe/update
+router.post("/update", isAuthenticated, employeupdate);
 
 // POST /employe/avatar/:studentid
 router.post("/avatar/:id", isAuthenticated, employeavatar);

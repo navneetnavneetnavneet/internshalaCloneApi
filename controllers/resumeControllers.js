@@ -168,14 +168,14 @@ exports.editcourse = catchAsyncHandler(async (req, res, next) => {
 })
 
 exports.deletecourse = catchAsyncHandler(async (req, res, next) => {
-//     const student = await Student.findById(req.id).exec();
-//     const filteredcourse = student.resume.courses.filter(i => i.id !== req.params.courseid);
-//     student.resume.courses = filteredcourse;
-//     await student.save();
+    const student = await Student.findById(req.id).exec();
+    const filteredcourse = student.resume.courses.filter(i => i.id !== req.params.courseid);
+    student.resume.courses = filteredcourse;
+    await student.save();
 
-//     res.status(200).json({
-//         message: "Course Deleted",
-//     })
+    res.status(200).json({
+        message: "Course Deleted",
+    })
 })
 
 // ---------------------project---------------------
