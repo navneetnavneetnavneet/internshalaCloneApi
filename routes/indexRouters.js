@@ -46,10 +46,10 @@ router.post("/student/reset-password", isAuthenticated, studentresetpassword);
 router.post("/student/change-email", isAuthenticated, studentchangeemail);
 
 // POST /student/update/:studentid
-router.post("/student/update/:id", isAuthenticated, studentupdate);
+router.post("/student/update", isAuthenticated, studentupdate);
 
 // POST /student/avatar/:studentid
-router.post("/student/avatar/:id", isAuthenticated, studentavatar);
+router.post("/student/avatar", isAuthenticated, studentavatar);
 
 // GET /student/delete
 router.get("/student/delete", isAuthenticated, studentdelete);

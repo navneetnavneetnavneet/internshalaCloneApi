@@ -40,7 +40,7 @@ router.get("/signout", isAuthenticated, employesignout);
 router.post("/sendmail", employesendmail);
 
 // GET /employe/forget-link/:studentid
-router.get("/forget-link/:id", employeforgetlink);
+router.post("/forget-link/:id", employeforgetlink);
 
 // POST /employe/reset-password
 router.post("/reset-password", isAuthenticated, employeresetpassword);

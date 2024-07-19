@@ -45,17 +45,15 @@ exports.employesignout = catchAsyncHandler(async (req, res, next) => {
 
 exports.employesendmail =catchAsyncHandler (async (req, res, next) => {
     const employe = await Employe.findOne({email: req.body.email}).exec();
-
     if(!employe){
         return next(new ErrorHandler("Employe not found with this email address", 404));
     }
 
     const url = `${req.protocol}://${req.get("host")}/employe/forget-link/${employe._id}`;
-
     sendmail(req, res, next, url);
     employe.resetPasswordToken = "1";
-    // console.log(employe);
     await employe.save();
+    // console.log(employe);
 
     res.json({employe, url});
 })
