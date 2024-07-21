@@ -40,14 +40,13 @@ const employeSchema = new mongoose.Schema(
         },
         organizationname: {
             type: String,
-            // required: [true, "Organization Name is required"],
             minLength: [4, "Organization Name should be atleast 4 character long"]
         },
         organizationlogo: {
             type: Object,
             default: {
                 fileId: "",
-                url: "https://images.unsplash.com/photo-1713617317250-c7020e06230f?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                url: ""
             }
         },
         designation: {

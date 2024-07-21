@@ -115,6 +115,31 @@ exports.studentupdate = catchAsyncHandler(async (req, res, next) => {
   const student = await Student.findByIdAndUpdate(req.id, req.body, {
     new: true,
   }).exec();
+
+  // console.log(req.files);
+
+  if (req.files) {
+    const file = req.files.avatar;
+    const modifiedFileName = `resumebuilder-${Date.now()}${path.extname(
+      file.name
+    )}`;
+
+    // delete file on imagekit
+    if (student.avatar.fileId !== "") {
+      await imagekit.deleteFile(student.avatar.fileId);
+    }
+
+    // upload file on imagekit
+    const { fileId, url } = await imagekit.upload({
+      file: file.data,
+      fileName: modifiedFileName,
+    });
+
+    student.avatar = { fileId, url };
+    await student.save();
+  }
+  // console.log(student);
+
   res.status(200).json({
     success: true,
     message: "Student Updated Successfully",
