@@ -7,12 +7,12 @@ const employeSchema = new mongoose.Schema(
         firstName: {
             type: String,
             required: [true, "First Name is required"],
-            minLength: [4, "First Name should be atleast 4 character long"]
+            minLength: [3, "First Name should be atleast 3 character long"]
         },
         lastName: {
             type: String,
             required: [true, "Last Name is required"],
-            minLength: [4, "Last Name should be atleast 4 character long"]
+            minLength: [3, "Last Name should be atleast 3 character long"]
         },
         contact: {
             type: String,
@@ -40,7 +40,7 @@ const employeSchema = new mongoose.Schema(
         },
         organizationname: {
             type: String,
-            minLength: [4, "Organization Name should be atleast 4 character long"]
+            minLength: [3, "Organization Name should be atleast 3 character long"]
         },
         organizationlogo: {
             type: Object,
